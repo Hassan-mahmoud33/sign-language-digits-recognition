@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>إشارة | التعرّف على الأرقام</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="إشارة">
+        <span class="brand-mark">٠١</span>
+        <span><strong>إشارة</strong><small>Sign language vision</small></span>
+      </a>
+      <div class="status-pill"><span class="status-dot"></span><span id="connectionLabel">جاهز للتحليل</span></div>
+    </header>
+
+    <section class="hero" id="top">
+      <div class="hero-copy">
+        <p class="eyebrow">SIGN LANGUAGE / DIGITS</p>
+        <h1>حوّل إشارة اليد<br /><em>إلى رقم.</em></h1>
+        <p class="intro">ارفع صورة واضحة أو استخدم الكاميرا، وسيتولى النموذج قراءة الرقم الظاهر في إشارة اليد.</p>
+        <div class="mini-stats"><span><b>01</b> صورة</span><span><b>02</b> تحليل</span><span><b>03</b> نتيجة</span></div>
+      </div>
+      <div class="hero-art" aria-hidden="true"><span class="digit digit-one">٧</span><span class="digit digit-two">٣</span><span class="cross">×</span></div>
+    </section>
+
+    <section class="workspace" aria-label="منطقة التحليل">
+      <div class="input-panel panel">
+        <div class="panel-heading"><div><span class="section-number">01</span><h2>أدخل صورة</h2></div><span class="hint">JPG / PNG</span></div>
+        <div class="dropzone" id="dropzone" tabindex="0">
+          <input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp" hidden />
+          <div class="upload-icon">↑</div>
+          <h3>اسحب الصورة هنا</h3>
+          <p>أو اضغط لاختيارها من جهازك</p>
+          <button class="outline-button" id="browseButton" type="button">اختيار صورة</button>
+        </div>
+        <div class="camera-row"><span>أو استخدم الكاميرا</span><button class="camera-button" id="cameraButton" type="button"><span>◉</span> فتح الكاميرا</button></div>
+        <div class="camera-view hidden" id="cameraView"><video id="video" autoplay playsinline></video><div class="camera-actions"><button class="primary-button" id="captureButton" type="button">التقاط الصورة</button><button class="text-button" id="closeCameraButton" type="button">إغلاق</button></div></div>
+      </div>
+
+      <div class="preview-panel panel">
+        <div class="panel-heading"><div><span class="section-number">02</span><h2>المعاينة</h2></div><span class="hint" id="fileName">لم يتم اختيار ملف</span></div>
+        <div class="preview-box" id="previewBox"><div class="empty-preview"><span class="frame-icon">□</span><p>ستظهر الصورة هنا</p></div><img id="previewImage" alt="معاينة الصورة المختارة" /></div>
+        <button class="primary-button analyze-button" id="analyzeButton" type="button" disabled>تحليل الصورة <span>←</span></button>
+        <p class="error-message" id="errorMessage" role="alert"></p>
+      </div>
+    </section>
+
+    <section class="result-panel panel" id="resultPanel" aria-live="polite">
+      <div class="panel-heading"><div><span class="section-number">03</span><h2>النتيجة</h2></div><span class="hint" id="resultHint">بانتظار صورة</span></div>
+      <div class="result-content">
+        <div class="result-number" id="resultNumber">—</div>
+        <div class="result-details"><p class="result-label">الرقم المتعرّف عليه</p><div class="confidence-line"><span>درجة الثقة</span><strong id="confidenceValue">—</strong></div><div class="confidence-track"><span id="confidenceBar"></span></div></div>
+        <button class="reset-button" id="resetButton" type="button" aria-label="بدء تحليل جديد">↻ <span>جديد</span></button>
+      </div>
+    </section>
+
+    <footer><span>MODEL / DIGITS CLASSIFIER</span><span>LOCAL VISION TOOL</span></footer>
+  </main>
+  <script src="/static/app.js"></script>
+</body>
+</html>
