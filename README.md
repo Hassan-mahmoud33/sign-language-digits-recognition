@@ -1,77 +1,80 @@
 # Sign Language Digits Recognition
 
-A small image classification project that recognizes sign language digits using a trained TensorFlow/Keras model. It includes a FastAPI web interface, a webcam script, and a Streamlit version.
+Image classification project that recognizes sign language digits (0–9) from a hand image, using a TensorFlow/Keras model. The project includes a FastAPI web app, a live webcam script, and a Streamlit interface as an alternative frontend.
 
 ## Project layout
 
 ```text
 sign_lang_digits_recognition/
-├── 1_train_model.ipynb       # Model training notebook
-├── 2_real_time.py            # Webcam inference with OpenCV
-├── 3_api.py                  # FastAPI application
-├── 4_streamlit.py            # Streamlit application
-├── 5_README.md
-├── digits_best_model.keras   # Trained model
+├── train_model.ipynb        # Model training notebook
+├── real_time.py             # Webcam inference with OpenCV
+├── api.py                   # FastAPI application
+├── streamlit.py             # Streamlit application
+├── Dockerfile                # Container definition for the API
+├── .dockerignore
+├── requirements.txt
+├── README.md
+├── digits_best_model.keras  # Trained model
 ├── Dataset/                  # Training and evaluation data
 ├── templates/
 │   └── index.html            # Web page
 └── static/
-    ├── style.css             # Page styles
-    └── app.js                # Upload, camera, and API logic
+    ├── style.css              # Page styles
+    └── app.js                 # Upload, camera, and API logic
 ```
 
 ## Requirements
 
-Use Python 3.10 or newer, then install the project dependencies:
+Python 3.10 or newer. Install dependencies with:
 
 ```powershell
-python -m pip install fastapi uvicorn python-multipart tensorflow opencv-python pillow numpy jinja2
+pip install -r requirements.txt
 ```
 
-## Run the FastAPI app
+## Running the API
 
-Open PowerShell in the project folder:
+### Option 1 — Directly with Python
+
+From inside the `sign_lang_digits_recognition` folder:
 
 ```powershell
-cd "C:\Users\B-UNIT\Desktop\computer_vision\image_classification\sign_lang_digits_recognition"
-python -m uvicorn 3_api:app --reload
+cd "sign_lang_digits_recognition"
+python -m uvicorn api:app --reload
 ```
 
-Open the web interface at:
+The web interface will be available at `http://127.0.0.1:8000/`, and the interactive API docs at `http://127.0.0.1:8000/docs`.
 
-```text
-http://127.0.0.1:8000/
+> Uvicorn needs to be run from inside this folder. Running it from the parent `image_classification` folder will raise `Could not import module "api"`.
+
+### Option 2 — With Docker
+
+Build the image:
+
+```powershell
+docker build -t sign-digits-api .
 ```
 
-Interactive API documentation is available at:
+Run the container:
 
-```text
-http://127.0.0.1:8000/docs
+```powershell
+docker run -p 8000:8000 sign-digits-api
 ```
 
-Run Uvicorn from inside `sign_lang_digits_recognition`. Running `uvicorn 3_api:app` from the parent `image_classification` folder can cause this error:
-
-```text
-Could not import module "3_api"
-```
+Once running, open `http://localhost:8000/` in your browser. This is the recommended way to run the project, since it avoids dependency and environment issues entirely.
 
 ## API usage
 
-The prediction endpoint is:
+Endpoint: `POST /api/predict`
 
-```text
-POST /api/predict
-```
+Send the image as `multipart/form-data` under the field name `image`.
 
-Send the image as a `multipart/form-data` field named `image`.
-
-Example using PowerShell and `curl.exe`:
+Example with `curl`:
 
 ```powershell
 curl.exe -X POST "http://127.0.0.1:8000/api/predict" -F "image=@test-image.jpg"
 ```
 
-Example response:
+Response:
 
 ```json
 {
@@ -80,27 +83,23 @@ Example response:
 }
 ```
 
-`label` is the predicted digit. `confidence` is the prediction confidence as a percentage.
+`label` is the predicted digit (0–9), and `confidence` is the model's confidence as a percentage.
 
 ## Notes
 
-- Use a clear image where the hand sign is easy to see.
-- Images are converted to RGB and resized to `260 x 260` before inference.
-- The frontend expects the API to run on port `8000`.
-- Do not run multiple API instances on the same port.
-- If you see `WinError 10048`, port `8000` is already in use. Stop the existing Uvicorn process or use another port:
-
-  ```powershell
-  python -m uvicorn 3_api:app --reload --port 8001
-  ```
-
-  When using another port, update `API_URL` in `static/app.js` as well.
-- The HTML page is loaded from `templates/index.html`. CSS and JavaScript are served from `/static/style.css` and `/static/app.js`.
-
-## Run the webcam version
+- Images are converted to RGB and resized to `260x260` before being passed to the model.
+- Use a clear, well-lit image where the hand sign is fully visible for better accuracy.
+- The frontend (`static/app.js`) expects the API to be running on port `8000`. If you change the port, update `API_URL` there as well.
+- If you get `WinError 10048`, port `8000` is already in use — either stop the process using it or run on a different port:
 
 ```powershell
-python 2_real_time.py
+  python -m uvicorn api:app --reload --port 8001
+```
+
+## Running the webcam version
+
+```powershell
+python real_time.py
 ```
 
 Press the space bar to close the camera window.
