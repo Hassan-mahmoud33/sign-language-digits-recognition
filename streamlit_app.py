@@ -3,9 +3,11 @@ from tensorflow.keras.models import load_model
 import numpy as np
 from PIL import Image
 import cv2
+from pathlib import Path
 
+MODEL_PATH = Path(__file__).parent / 'digits_best_model.keras'
 
-model = load_model('digits_best_model.keras')
+model = load_model(MODEL_PATH)
 
 st.title('Digit Recognition')
 
