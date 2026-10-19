@@ -1,8 +1,11 @@
 import cv2
 import numpy as np
 from tensorflow.keras.models import load_model
+from pathlib import Path
 
-model = load_model('digits_best_model.keras')
+MODEL_PATH = Path(__file__).parent / 'digits_best_model.keras'
+model = load_model(MODEL_PATH)
+
 cap = cv2.VideoCapture(0)
 
 while cap.isOpened():
